@@ -2,13 +2,8 @@ name: Trading Bot — Paper
 
 on:
   schedule:
-    - cron: '30 14 * * 1-5'  # 9:30am ET - apertura
-    - cron: '0 17 * * 1-5'   # 12:00pm ET - mediodía
-    - cron: '0 20 * * 1-5'   # 3:00pm ET
-    - cron: '15 20 * * 1-5'
-    - cron: '30 20 * * 1-5'
-    - cron: '45 20 * * 1-5'
-    - cron: '0 21 * * 1-5'   # 4:00pm ET - cierre
+    - cron: '30 14 * * 1-5'  # 9:30am ET apertura
+    - cron: '0 17 * * 1-5'   # 12:00pm ET mediodía
     - cron: '30 15 * * 1-5'
     - cron: '0 16 * * 1-5'
     - cron: '30 16 * * 1-5'
@@ -16,51 +11,16 @@ on:
     - cron: '30 18 * * 1-5'
     - cron: '0 19 * * 1-5'
     - cron: '30 19 * * 1-5'
+    - cron: '0 20 * * 1-5'
+    - cron: '30 20 * * 1-5'
+    - cron: '0 21 * * 1-5'   # 4:00pm ET cierre
   workflow_dispatch:
+    inputs:
+      modo:
+        description: 'Modo: trade, open, noon, close'
+        default: 'trade'
 
 jobs:
-  notify-open:
-    if: ${{ github.event.schedule == '30 14 * * 1-5' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python-version: '3.11'}
-      - run: pip install -r requirements.txt
-      - run: python bot.py open
-        env:
-          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
-          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-
-  notify-noon:
-    if: ${{ github.event.schedule == '0 17 * * 1-5' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python-version: '3.11'}
-      - run: pip install -r requirements.txt
-      - run: python bot.py noon
-        env:
-          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
-          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-
-  notify-close:
-    if: ${{ github.event.schedule == '0 21 * * 1-5' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python-version: '3.11'}
-      - run: pip install -r requirements.txt
-      - run: python bot.py close
-        env:
-          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
-          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-
   trade:
     runs-on: ubuntu-latest
     steps:
@@ -68,7 +28,15 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
       - run: pip install -r requirements.txt
-      - run: python bot.py trade
+      - name: Run bot
+        run: |
+          SCHEDULE="${{ github.event.schedule }}"
+          if [ "$SCHEDULE" = "30 14 * * 1-5" ]; then MODE="open"
+          elif [ "$SCHEDULE" = "0 17 * * 1-5" ]; then MODE="noon"
+          elif [ "$SCHEDULE" = "0 21 * * 1-5" ]; then MODE="close"
+          else MODE="${{ github.event.inputs.modo || 'trade' }}"
+          fi
+          python bot.py $MODE
         env:
           ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
           ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
