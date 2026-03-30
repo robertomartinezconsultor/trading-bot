@@ -1,0 +1,52 @@
+name: Trading Bot — Paper
+
+on:
+  schedule:
+    # Every 15 min Mon-Fri 9:30am-3:45pm ET (14:30-20:45 UTC)
+    - cron: '30 14 * * 1-5'
+    - cron: '45 14 * * 1-5'
+    - cron: '0 15 * * 1-5'
+    - cron: '15 15 * * 1-5'
+    - cron: '30 15 * * 1-5'
+    - cron: '45 15 * * 1-5'
+    - cron: '0 16 * * 1-5'
+    - cron: '15 16 * * 1-5'
+    - cron: '30 16 * * 1-5'
+    - cron: '45 16 * * 1-5'
+    - cron: '0 17 * * 1-5'
+    - cron: '15 17 * * 1-5'
+    - cron: '30 17 * * 1-5'
+    - cron: '45 17 * * 1-5'
+    - cron: '0 18 * * 1-5'
+    - cron: '15 18 * * 1-5'
+    - cron: '30 18 * * 1-5'
+    - cron: '45 18 * * 1-5'
+    - cron: '0 19 * * 1-5'
+    - cron: '15 19 * * 1-5'
+    - cron: '30 19 * * 1-5'
+    - cron: '45 19 * * 1-5'
+    - cron: '0 20 * * 1-5'
+    - cron: '15 20 * * 1-5'
+    - cron: '30 20 * * 1-5'
+    - cron: '45 20 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  trade:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run trading bot (single cycle)
+        env:
+          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
+        run: python bot.py
