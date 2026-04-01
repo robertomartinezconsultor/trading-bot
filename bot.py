@@ -8,7 +8,7 @@ API_KEY    = os.environ.get('ALPACA_API_KEY', 'PK6LPVZX6NQAIJLIRYX3E4ML3A')
 SECRET_KEY = os.environ.get('ALPACA_SECRET_KEY', 'DveH7XeVTDJoAKpzS6phetP7XeJWQe4FNmsbNAWzmLEM')
 GMAIL_USER = os.environ.get('GMAIL_USER', 'roberto.martinezconsultor@gmail.com')
 GMAIL_PASS = os.environ.get('GMAIL_APP_PASSWORD', '')
-BASE_URL   = "https://paper-api.alpaca.markets/v2"
+BASE_URL   = "https://paper-api.alpaca.markets"
 
 api = tradeapi.REST(API_KEY, SECRET_KEY, BASE_URL)
 ACCIONES = ["AAPL", "TSLA", "NVDA", "MSFT"]
