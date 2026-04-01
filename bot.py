@@ -86,7 +86,8 @@ def analizar(simbolo, portfolio_value):
             simbolo, "15Min",
             start=inicio.strftime('%Y-%m-%dT%H:%M:%SZ'),
             end=fin.strftime('%Y-%m-%dT%H:%M:%SZ'),
-            limit=100
+            limit=100,
+            feed='iex'
         ).df
         if barras.empty or len(barras) < 30:
             print(f"{simbolo}: datos insuficientes ({len(barras)} barras)")
