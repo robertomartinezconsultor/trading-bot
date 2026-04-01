@@ -2,18 +2,20 @@ name: Trading Bot — Paper
 
 on:
   schedule:
-    - cron: '30 14 * * 1-5'  # 9:30am ET apertura
-    - cron: '0 17 * * 1-5'   # 12:00pm ET mediodía
-    - cron: '30 15 * * 1-5'
-    - cron: '0 16 * * 1-5'
-    - cron: '30 16 * * 1-5'
-    - cron: '0 18 * * 1-5'
-    - cron: '30 18 * * 1-5'
-    - cron: '0 19 * * 1-5'
-    - cron: '30 19 * * 1-5'
-    - cron: '0 20 * * 1-5'
-    - cron: '30 20 * * 1-5'
-    - cron: '0 21 * * 1-5'   # 4:00pm ET cierre
+    - cron: '30 14 * * 1-5'   # 9:30am ET apertura
+    - cron: '0 15 * * 1-5'    # 10:00am ET
+    - cron: '30 15 * * 1-5'   # 10:30am ET
+    - cron: '0 16 * * 1-5'    # 11:00am ET
+    - cron: '30 16 * * 1-5'   # 11:30am ET
+    - cron: '0 17 * * 1-5'    # 12:00pm ET mediodia
+    - cron: '30 17 * * 1-5'   # 12:30pm ET
+    - cron: '0 18 * * 1-5'    # 1:00pm ET
+    - cron: '30 18 * * 1-5'   # 1:30pm ET
+    - cron: '0 19 * * 1-5'    # 2:00pm ET
+    - cron: '30 19 * * 1-5'   # 2:30pm ET
+    - cron: '0 20 * * 1-5'    # 3:00pm ET
+    - cron: '30 20 * * 1-5'   # 3:30pm ET
+    - cron: '0 21 * * 1-5'    # 4:00pm ET cierre
   workflow_dispatch:
     inputs:
       modo:
@@ -34,8 +36,10 @@ jobs:
           if [ "$SCHEDULE" = "30 14 * * 1-5" ]; then MODE="open"
           elif [ "$SCHEDULE" = "0 17 * * 1-5" ]; then MODE="noon"
           elif [ "$SCHEDULE" = "0 21 * * 1-5" ]; then MODE="close"
-          else MODE="${{ github.event.inputs.modo || 'trade' }}"
+          elif [ -n "${{ github.event.inputs.modo }}" ]; then MODE="${{ github.event.inputs.modo }}"
+          else MODE="trade"
           fi
+          echo "Ejecutando modo: $MODE"
           python bot.py $MODE
         env:
           ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
