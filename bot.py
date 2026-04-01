@@ -83,7 +83,7 @@ def analizar(simbolo, portfolio_value):
         fin = datetime.utcnow()
         inicio = fin - timedelta(days=10)
         barras = api.get_bars(
-            simbolo, TimeFrame.Minute15,
+            simbolo, "15Min",
             start=inicio.strftime('%Y-%m-%dT%H:%M:%SZ'),
             end=fin.strftime('%Y-%m-%dT%H:%M:%SZ'),
             limit=100
